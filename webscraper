@@ -1,0 +1,27 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import pandas as pd
+import time
+
+# Initialize WebDriver
+driver = webdriver.Chrome()
+
+# in to the url
+driver.get("http://books.toscrape.com/")
+#a 2sec pause to load the web page
+time.sleep(2)
+
+#initializing empty list for data saving
+book_data = []
+
+# Extracting book details
+books = driver.find_elements(By.CSS_SELECTOR, "ol.row li")
+#looping the list of books
+for book in books:
+    title = book.find_element(By.TAG_NAME, "h3").text
+    price = book.find_element(By.CSS_SELECTOR, ".price_color").text
+    book_data.append([title,price])
+
+#saving data to CSV
+pd.DataFrame(book_data).to_csv("book_data.csv", index=False)
+driver.quit()
